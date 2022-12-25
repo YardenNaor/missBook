@@ -4,16 +4,46 @@ import { utilService } from './util.service.js'
  const BOOKS_KEY= 'books_DB'  
  _createBooks()
 
-export const bookService = {
 
+export const bookService = {
+    query,
+    get,
+    remove,
+    save,
+    getDefaultFilter,
 }
 
-// function createBooks(){
-// const booksPrm= storageService.query(STORAGE_KEY) 
 
+function query(filterBy = getDefaultFilter()) {
+    return storageService.query(BOOKS_KEY)
+        .then(books => {
+            if (filterBy.txt) {
+                const regex = new RegExp(filterBy.txt, 'i')
+                books = books.filter(book => regex.test(book.title))
+            }
+            if (filterBy.maxPrice) {
+                books = books.filter(book => book.listPrice.amount <= filterBy.maxPrice)
+            }
+            return books
+        })
+}
 
-// }
-// }
+function get(bookId) {
+    return storageService.get(BOOKS_KEY, bookId)
+    // return axios.get(BOOKS_KEY, bookId)
+}
+
+function remove(bookId) {
+    return storageService.remove(BOOKS_KEY, bookId)
+}
+
+function save(book) {
+    if (book.id) {
+        return storageService.put(BOOKS_KEY, book)
+    } else {
+        return storageService.post(BOOKS_KEY, book)
+    }
+}
 
 
 function _createBooks() {
@@ -63,6 +93,6 @@ function _createBooks() {
     }
 }
 
-// function _createBook() {
-
-// }
+function getDefaultFilter() {
+    return { txt: '', minSpeed: '' }
+}
