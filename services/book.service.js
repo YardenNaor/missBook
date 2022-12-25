@@ -15,6 +15,7 @@ export const bookService = {
 
 
 function query(filterBy = getDefaultFilter()) {
+    console.log('hi from query:')
     return storageService.query(BOOKS_KEY)
         .then(books => {
             if (filterBy.txt) {
@@ -94,5 +95,6 @@ function _createBooks() {
 }
 
 function getDefaultFilter() {
-    return { txt: '', minSpeed: '' }
+    console.log('hi from getDefaultFilter:')
+    return { txt: '', maxPrice: '' }
 }
